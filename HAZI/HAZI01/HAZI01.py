@@ -15,10 +15,13 @@ end=4
 
 def subset(input_list,start,end):
     output_list = []
+
+    if (len(input_list) == 0):
+        return output_list
+    
     for index in range(start,end,1):
         output_list.append(input_list[index])
     return output_list
-
 
 
 #Készíts egy függvényt ami egy listát vár paraméterként és ennek a listának minden n-edik elemét adja vissza.
