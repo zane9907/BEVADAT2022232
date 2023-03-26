@@ -32,6 +32,7 @@ def dict_to_dataframe(input_dict):
 test_df = dict_to_dataframe(stats)
 
 
+
 '''
 Készíts egy függvényt ami a bemeneti DataFrame-ből vissza adja csak azt az oszlopot amelynek a neve a bemeneti string-el megegyező.
 
@@ -43,7 +44,9 @@ függvény neve: get_column
 
 
 def get_column(input_df, col_name):
-    return input_df[col_name]
+    new_df = input_df.copy()
+    return new_df[col_name]
+
 
 
 '''
@@ -57,7 +60,8 @@ függvény neve: get_top_two
 
 
 def get_top_two(input_df):
-    sorted_df = input_df.sort_values(by='area', ascending=False)
+    new_df = input_df.copy()
+    sorted_df = new_df.sort_values(by='area', ascending=False)
     top_two = sorted_df.head(2)
     return top_two
 
@@ -74,8 +78,9 @@ függvény neve: population_density
 
 
 def population_density(input_df):
-    input_df['density'] = input_df['population'] / input_df['area']
-    return input_df
+    new_df = input_df.copy()    
+    new_df['density'] = new_df['population'] / new_df['area']
+    return new_df
 
 
 '''
@@ -94,12 +99,12 @@ függvény neve: plot_population
 
 
 def plot_population(input_df):
+    new_df = input_df.copy()    
     fig, ax = plt.subplots()
-    ax.bar(input_df['country'], input_df['population']/1e6)
+    ax.bar(new_df['country'], new_df['population']/1e6)
     ax.set_title('Population of Countries')
     ax.set_xlabel('Country')
     ax.set_ylabel('Population (millions)')
-    plt.xticks(rotation=90)
     return fig
 
 
@@ -116,9 +121,10 @@ függvény neve: plot_area
 '''
 
 
-def plot_area(input_df):
+def plot_area(df):
+    new_df = df.copy()
     fig, ax = plt.subplots()
-    ax.pie(input_df['area'], labels=input_df['country'], autopct='%1.1f%%')
+    ax.pie(new_df['area'], labels=new_df['country'], autopct='%1.1f%%')
     ax.set_title('Area of Countries')
     return fig
 
