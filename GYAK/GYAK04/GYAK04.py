@@ -25,12 +25,10 @@ stats = {"country": ["Brazil", "Russia", "India", "China", "South Africa"],
        "population": [200.4, 143.5, 1252, 1357, 52.98] }
 
 
-def dict_to_dataframe(input_dict):
-    df = pd.DataFrame(input_dict)
-    return df
+def dict_to_dataframe(d):
+    return pd.DataFrame(d)
 
-test_df = dict_to_dataframe(stats)
-
+test_df=dict_to_dataframe(stats)
 
 
 '''
@@ -43,10 +41,9 @@ függvény neve: get_column
 '''
 
 
-def get_column(input_df, col_name):
-    new_df = input_df.copy()
+def get_column(df, col_name):
+    new_df = df.copy()
     return new_df[col_name]
-
 
 
 '''
@@ -59,11 +56,10 @@ függvény neve: get_top_two
 '''
 
 
-def get_top_two(input_df):
-    new_df = input_df.copy()
-    sorted_df = new_df.sort_values(by='area', ascending=False)
-    top_two = sorted_df.head(2)
-    return top_two
+def get_top_two(df):
+    new_df = df.copy()
+    sorted_df = new_df.sort_values('area', ascending=False)
+    return sorted_df.iloc[:2]
 
 
 '''
@@ -98,13 +94,12 @@ függvény neve: plot_population
 '''
 
 
-def plot_population(input_df):
-    new_df = input_df.copy()    
+def plot_population(df):
     fig, ax = plt.subplots()
-    ax.bar(new_df['country'], new_df['population']/1e6)
-    ax.set_title('Population of Countries')
-    ax.set_xlabel('Country')
-    ax.set_ylabel('Population (millions)')
+    ax.bar(df["country"], df["population"])
+    ax.set_xlabel("Country")
+    ax.set_ylabel("Population (millions)")
+    ax.set_title("Population of Countries")
     return fig
 
 
@@ -124,8 +119,14 @@ függvény neve: plot_area
 def plot_area(df):
     new_df = df.copy()
     fig, ax = plt.subplots()
-    ax.pie(new_df['area'], labels=new_df['country'], autopct='%1.1f%%')
     ax.set_title('Area of Countries')
+    
+    labels = new_df['country'].values.tolist()
+    
+    data = new_df['area'].values.tolist()
+    
+    ax.pie(data, labels=labels)
+    
     return fig
 
 
