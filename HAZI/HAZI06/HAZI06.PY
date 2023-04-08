@@ -51,3 +51,25 @@ HAZI-
 ##                                                              ##
 ##################################################################
 """
+
+
+from sklearn.model_selection import train_test_split
+from NJCleaner import NJCleaner
+from GYAK.GYAK06.DecisionTreeClassifier import DecisionTreeClassifier
+
+
+nj = NJCleaner('./2018_03.csv')
+nj.prep_df()
+
+# A késés oszlop kiválasztása
+y = nj.data['delay']
+X = nj.data.drop(['delay'], axis=1)
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=41)
+
+# Decision Tree osztály inicializálása
+clf = DecisionTreeClassifier(random_state=41)
+
+# Decision Tree illesztése a train seten
+clf.fit(X_train, y_train)
