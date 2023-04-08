@@ -55,21 +55,57 @@ HAZI-
 
 from sklearn.model_selection import train_test_split
 from NJCleaner import NJCleaner
-from GYAK.GYAK06.DecisionTreeClassifier import DecisionTreeClassifier
+from DecisionTreeClassifier  import DecisionTreeClassifier
+import pandas as pd
+from sklearn.metrics import accuracy_score
 
 
 nj = NJCleaner('./2018_03.csv')
 nj.prep_df()
 
-# A késés oszlop kiválasztása
-y = nj.data['delay']
-X = nj.data.drop(['delay'], axis=1)
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=41)
+col_name = ['stop_sequence' , 'from_id' , 'to_id' , 'status' , 'line' , 'type' , 'day', 'part_of_the_day' , 'delay']
+data = pd.read_csv('./data/NJ.csv',skiprows=1, header=None, names=col_name)
 
-# Decision Tree osztály inicializálása
-clf = DecisionTreeClassifier(random_state=41)
 
-# Decision Tree illesztése a train seten
-clf.fit(X_train, y_train)
+X = data.iloc[:, :-1].values
+Y = data.iloc[:, -1].values.reshape(-1,1)
+X_train, X_test, Y_train, Y_test = train_test_split(X,Y,test_size=.2, random_state=41)
+
+
+classifier = DecisionTreeClassifier(min_samples_split=2, max_depth=4)
+classifier.fit(X_train, Y_train)
+
+Y_pred = classifier.predict(X_test)
+print(accuracy_score(Y_test, Y_pred))
+
+
+
+
+#A feladat alapján megírtam az NJCleaner.py fájlt és NJCleaner osztályt. Majd a HAZI06.ipynb-ben tesztelem, ahol
+#kisebb bugokba futottam. Egy VS Code reload megoldotta a problémát. Utána az órai feladat alapján felparamétereztem a decision tree-t.
+#Pár tesztelés után sikerült elérni egy 90%-os accuracy-t.
+
+#Nehézségek:
+#Nem találta a prep_df() metódust (pedig ott volt)
+#Nem találta meg NJ.csv fájlt (pedig ott volt)
+
+
+# min_samples_split=2, max_depth=4
+#Eredmények:
+#1  min_samples_split=1, max_depth=1 --> accuracy: 0.7773333333333333
+#2  min_samples_split=1, max_depth=2 --> accuracy: 0.7823333333333333
+#3  min_samples_split=1, max_depth=3 --> accuracy: 0.7839166666666667
+#4  min_samples_split=1, max_depth=4 --> accuracy: 0.7849166666666667
+#5  min_samples_split=2, max_depth=1 --> accuracy: 0.7773333333333333
+#6  min_samples_split=2, max_depth=2 --> accuracy: 0.7823333333333333
+#7  min_samples_split=2, max_depth=3 --> accuracy: 0.7839166666666667
+#8  min_samples_split=2, max_depth=4 --> accuracy: 0.7849166666666667
+#9  min_samples_split=3, max_depth=1 --> accuracy: 0.7773333333333333
+#10 min_samples_split=3, max_depth=2 --> accuracy: 0.7823333333333333
+#11 min_samples_split=2, max_depth=6 --> accuracy: 0.7885
+#12 min_samples_split=4, max_depth=6 --> accuracy: 0.7885
+#13 min_samples_split=5, max_depth=5 --> accuracy: 0.7885833333333333
+#14 min_samples_split=2, max_depth=7 --> accuracy: 0.7934166666666667
+#14 min_samples_split=7, max_depth=7 --> accuracy: 0.7935
+

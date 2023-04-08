@@ -6,7 +6,8 @@ class NJCleaner:
         self.data = pd.read_csv(csv_path)
     
     def order_by_scheduled_time(self):
-        return self.data.sort_values('scheduled_time')
+        self.data = self.data.sort_values(by=['scheduled_time'])
+        return self.data
     
     def drop_columns_and_nan(self):
         self.data = self.data.dropna()
@@ -19,9 +20,21 @@ class NJCleaner:
         return self.data
     
     def convert_scheduled_time_to_part_of_the_day(self):
-        bins = pd.IntervalIndex.from_tuples([(0, 3.99), (4, 7.99), (8, 11.99), (12, 15.99), (16, 19.99), (20, 23.99)])
-        labels = ['late_night', 'early_morning', 'morning', 'afternoon', 'evening', 'night']
-        self.data['part_of_the_day'] = pd.cut(pd.to_datetime(self.data['scheduled_time']).dt.hour, bins=bins, labels=labels, include_lowest=True)
+        def get_part_of_day(hour):
+            if 4 <= hour < 8:
+                return 'early_morning'
+            elif 8 <= hour < 12:
+                return 'morning'
+            elif 12 <= hour < 16:
+                return 'afternoon'
+            elif 16 <= hour < 20:
+                return 'evening'
+            elif 20 <= hour <= 23:
+                return 'night'
+            else:
+                return 'late_night'
+        
+        self.data['part_of_the_day'] = pd.to_datetime(self.data['scheduled_time']).dt.hour.apply(get_part_of_day)
         self.data = self.data.drop(['scheduled_time'], axis=1)
         return self.data
     
@@ -30,7 +43,7 @@ class NJCleaner:
         return self.data
     
     def drop_unnecessary_columns(self):
-        self.data = self.data.drop(['train_id', 'scheduled_time', 'actual_time', 'delay_minutes'], axis=1)
+        self.data = self.data.drop(['train_id', 'actual_time', 'delay_minutes'], axis=1)
         return self.data
     
     def save_first_60k(self, save_path):
