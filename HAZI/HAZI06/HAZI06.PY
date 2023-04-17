@@ -84,7 +84,7 @@ print(accuracy_score(Y_test, Y_pred))
 
 #A feladat alapján megírtam az NJCleaner.py fájlt és NJCleaner osztályt. Majd a HAZI06.ipynb-ben tesztelem, ahol
 #kisebb bugokba futottam. Egy VS Code reload megoldotta a problémát. Utána az órai feladat alapján felparamétereztem a decision tree-t.
-#Pár tesztelés után sikerült elérni egy 90%-os accuracy-t.
+
 
 #Nehézségek:
 #Nem találta a prep_df() metódust (pedig ott volt)
